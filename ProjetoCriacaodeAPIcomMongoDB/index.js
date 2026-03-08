@@ -1,5 +1,6 @@
 //config inicial
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 
 // forma de ler JSON / middlewares
@@ -19,6 +20,16 @@ app.get('/', (req, res) => {     //Criando uma rota GET para o endpoint raiz
     res.json({ message: 'Oi Express!' })   //Resposta em JSON com uma mensagem
 })
 
+//mongodb+srv://elton:1234@apicluster.6hifddv.mongodb.net/?appName=APICluster
+
 
 //entregar uma porta
-app.listen(3000)       //Inicia o servidor/API na porta 3000
+mongoose.connect('mongodb+srv://elton:1234@apicluster.6hifddv.mongodb.net/?appName=APICluster')
+    .then(() => {
+        console.log('Conectado ao MongoDB Atlas!') //Mensagem de sucesso na conexão com o MongoDB Atlas
+        app.listen(3000)       //Inicia o servidor/API na porta 3000  
+    }
+)
+    .catch((error) => {
+        console.error('Erro ao conectar ao MongoDB Atlas:', error) //Mensagem de erro caso a conexão com o MongoDB Atlas falhe
+    })
