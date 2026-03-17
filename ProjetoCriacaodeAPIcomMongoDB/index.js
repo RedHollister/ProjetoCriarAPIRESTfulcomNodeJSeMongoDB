@@ -3,8 +3,6 @@ const express = require('express')
 const mongoose = require('mongoose')
 const app = express();
 
-const Person = require('./models/Person')   //Importa o modelo "Person" do arquivo "models/Person.js" para ser usado no arquivo principal da aplicação
-
 // forma de ler JSON / middlewares
 app.use(
     express.urlencoded({ 
@@ -15,28 +13,10 @@ app.use(
 app.use(express.json());    //Vai poder ler JSON via body
 
 //rotas da API
-app.post('/person', async (req, res) => {   //Criando uma rota POST para o endpoint "/person" que recebe dados do cliente e os salva no banco de dados
-    //req.body
+const personRoutes = require('./Routes/personRoutes')   //Importa as rotas definidas no arquivo "Routes/personRoutes.js" para ser usadas no arquivo principal da aplicação
 
-    // {name: "Elton", salary: 5000, approved: true}
-    const { name, salary, approved } = req.body   //Desestruturação dos dados recebidos no corpo da requisição
+app.use('/person', personRoutes)   //Configura o aplicativo para usar as rotas importadas do arquivo "Routes/personRoutes.js" para o endpoint "/person"
 
-    const person = {    //Criação de um objeto "person" com os dados desestruturados
-        name,
-        salary,
-        approved
-    }
-
-    try {
-        //criando dados
-        await Person.create(person)   //Tenta criar um novo documento no banco de dados usando o modelo "Person" com os dados do objeto "person"
-        res.status(201).json({ message: 'Pessoa inserida com sucesso!' })   //Se a criação for bem-sucedida, retorna uma resposta com status 201 e uma mensagem de sucesso em formato JSON
-        
-    } catch (error) {
-        res.status(500).json({ error: error })   //Em caso de erro, retorna uma resposta com status 500 e o erro em formato JSON
-    }
-    
-})
 // rota inicial / endpoint
 app.get('/', (req, res) => {     //Criando uma rota GET para o endpoint raiz
 
