@@ -59,10 +59,17 @@ router.get('/:id', async (req, res) => {    //Criando uma rota GET para o endpoi
 
     try {
         const person = await Person.findOne({ _id: id })   //Tenta buscar um documento específico no banco de dados usando o modelo "Person" e o ID fornecido, armazenando o resultado na variável "person"
+        if (!person) {  //Verifica se o documento foi encontrado
+            res.status(404).json({ error: 'Pessoa não encontrada!' })   //Se o documento não for encontrado, retorna uma resposta com status 404 e uma mensagem de erro em formato JSON
+            return
+        }
         res.status(200).json(person)    //Se o documento for encontrado, retorna uma resposta com status 200 e os dados do documento em formato JSON
     } catch (error) {
         res.status(500).json({ error: error })   //Em caso de erro, retorna uma resposta com status 500 e o erro em formato JSON
     }
 })
+
+//Update - atualização de dados (PUT, PATCH))
+
 
 module.exports = router    //Exporta o roteador para ser usado em outros arquivos do projeto, como o arquivo principal "index.js"
