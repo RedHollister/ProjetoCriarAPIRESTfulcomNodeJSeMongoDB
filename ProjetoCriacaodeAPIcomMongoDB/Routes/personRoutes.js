@@ -70,6 +70,23 @@ router.get('/:id', async (req, res) => {    //Criando uma rota GET para o endpoi
 })
 
 //Update - atualização de dados (PUT, PATCH))
+router.patch('/:id', async (req, res) => {  //Criando uma rota PATCH para o endpoint "/person/:id" que atualiza um documento específico do banco de dados usando o ID fornecido na URL
+    const id = req.params.id   //Obtém o ID da URL usando "req.params.id" e armazena na variável "id"
 
+    const { name, salary, approved } = req.body   //Desestruturação dos dados recebidos no corpo da requisição
+
+    const person = {    //Criação de um objeto "person" com os dados desestruturados
+        name,
+        salary,
+        approved
+    }
+
+    try {
+        const updatedPerson = await Person.updateOne({ _id: id }, person)   //Tenta atualizar um documento específico no banco de dados usando o modelo "Person", o ID fornecido e os dados do objeto "person", armazenando o resultado na variável "updatedPerson"
+        res.status(200).json(person)    //Se a atualização for bem-sucedida, retorna uma resposta com status 200 e os dados do documento atualizado em formato JSON
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
+})
 
 module.exports = router    //Exporta o roteador para ser usado em outros arquivos do projeto, como o arquivo principal "index.js"
