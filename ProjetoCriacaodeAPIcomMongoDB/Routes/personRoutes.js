@@ -83,7 +83,31 @@ router.patch('/:id', async (req, res) => {  //Criando uma rota PATCH para o endp
 
     try {
         const updatedPerson = await Person.updateOne({ _id: id }, person)   //Tenta atualizar um documento específico no banco de dados usando o modelo "Person", o ID fornecido e os dados do objeto "person", armazenando o resultado na variável "updatedPerson"
+        
+        if (updatedPerson.matchedCount === 0) {    //Verifica se o documento foi encontrado para atualização
+            res.status(404).json({ error: 'Pessoa não encontrada!' })   //Se o documento não for encontrado, retorna uma resposta com status 404 e uma mensagem de erro em formato JSON
+            return
+        }
+        
         res.status(200).json(person)    //Se a atualização for bem-sucedida, retorna uma resposta com status 200 e os dados do documento atualizado em formato JSON
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
+})
+
+//Delete - remoção de dados
+router.delete('/:id', async (req, res) => {  //Criando uma rota DELETE para o endpoint "/person/:id" que remove um documento específico do banco de dados usando o ID fornecido na URL
+    const id = req.params.id   //Obtém o ID da URL usando "req.params.id" e armazena na variável "id"
+
+    try {
+        const deletedPerson = await Person.deleteOne({ _id: id })   //Tenta remover um documento específico no banco de dados usando o modelo "Person" e o ID fornecido, armazenando o resultado na variável "deletedPerson"
+        
+        if (deletedPerson.deletedCount === 0) {    //Verifica se o documento foi encontrado para remoção
+            res.status(404).json({ error: 'Pessoa não encontrada!' })   //Se o documento não for encontrado, retorna uma resposta com status 404 e uma mensagem de erro em formato JSON
+            return
+        }
+        
+        res.status(200).json({ message: 'Pessoa removida com sucesso!' })    //Se a remoção for bem-sucedida, retorna uma resposta com status 200 e uma mensagem de sucesso em formato JSON
     } catch (error) {
         res.status(500).json({ error: error })
     }
